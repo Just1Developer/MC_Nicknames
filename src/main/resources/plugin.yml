@@ -1,0 +1,4 @@
+name: Nicknames
+version: '1.0-SNAPSHOT'
+main: net.justonedev.mc.nicknames.Nicknames
+api-version: '1.21'
