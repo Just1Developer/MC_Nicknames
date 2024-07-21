@@ -32,7 +32,7 @@ public final class Nicknames extends JavaPlugin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         Nametag tag = new Nametag(player);
-        tag.setPrefix("§7[§cAdmin§7] ").build();
+        tag.setPrefix("&7[&cAdmin&7] &f").build();
     }
 
     /*
