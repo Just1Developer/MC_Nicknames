@@ -38,10 +38,11 @@ public final class Nicknames extends JavaPlugin implements Listener {
             prefixHandler.setNickname(p);
         }
 
+        NicknameItem nickNameItem = new NicknameItem();
+
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getPluginManager().registerEvents(new ConnectionEvents(), this);
-
-        NicknameItem nickNameItem = new NicknameItem();
+        Bukkit.getPluginManager().registerEvents(nickNameItem, this);
 
         getCommand("createnickname").setExecutor(nickNameItem);
     }

@@ -1,6 +1,7 @@
 package net.justonedev.mc.nicknames.item;
 
 import net.justonedev.mc.nicknames.Nicknames;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -9,7 +10,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerEditBookEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.PrepareAnvilEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -24,13 +28,13 @@ public class NicknameItem implements CommandExecutor, Listener {
         nicknameItem = new ItemStack(Nicknames.PLUGIN_MATERIAL, 1);
         ItemMeta meta = nicknameItem.getItemMeta();
         assert meta != null;
+        meta.setDisplayName(itemName);
         meta.setCustomModelData(NICKNAME_MODEL_DATA);
         nicknameItem.setItemMeta(meta);
 
         editBook = new ItemStack(Material.WRITABLE_BOOK, 1);
         meta = editBook.getItemMeta();
         assert meta != null;
-        meta.setDisplayName(itemName);
         meta.setCustomModelData(BOOK_MODEL_DATA);
         editBook.setItemMeta(meta);
     }
@@ -61,30 +65,35 @@ public class NicknameItem implements CommandExecutor, Listener {
             return;
         }
 
-        p.getInventory().setItemInMainHand(new ItemStack(editBook));
-        //p.openBook(p.getInventory().getItemInMainHand());
-        p.openBook(new ItemStack(editBook));
+        Inventory anvil = Bukkit.createInventory(null, InventoryType.ANVIL, "Create Nametag");
+        anvil.setItem(0, new ItemStack(nicknameItem));
+        p.openInventory(anvil);
     }
 
     @EventHandler
-    public void onBookSign(PlayerEditBookEvent e) {
-        Player p = e.getPlayer();
+    public void onAnvilPrepared(InventoryClickEvent e) {
+        Bukkit.broadcastMessage("§eBwd");
+    }
 
-        if (!e.getPreviousBookMeta().hasCustomModelData()) return;
-        if (e.getPreviousBookMeta().getCustomModelData() != BOOK_MODEL_DATA) return;
+    @EventHandler
+    public void onAnvilPrepare(PrepareAnvilEvent e) {
+        Bukkit.broadcastMessage("1");
+        ItemStack result = e.getResult();
+        if (!isNicknameItem(result)) return;
+        Bukkit.broadcastMessage("2");
 
-        if (!e.isSigning() || e.isCancelled()) {
-            p.getInventory().setItemInMainHand(null);
-            return;
-        }
+        ItemStack newResult = new ItemStack(result);
+        ItemMeta meta = newResult.getItemMeta();
+        assert meta != null;
+        Bukkit.broadcastMessage("3");
 
-        StringBuilder nicknameBuilder = new StringBuilder();
-        for (String line : e.getNewBookMeta().getPages()) {
-            nicknameBuilder.append(line);
-        }
-        String nickname = ChatColor.translateAlternateColorCodes('&', nicknameBuilder.toString().trim());
-
-        p.getInventory().setItemInMainHand(newNickname(nickname));
+        String nickname = ChatColor.translateAlternateColorCodes('&', meta.getDisplayName().trim());
+        Bukkit.broadcastMessage("4");
+        meta.setDisplayName(nickname);
+        newResult.setItemMeta(meta);
+        Bukkit.broadcastMessage("5");
+        e.setResult(newResult);
+        Bukkit.broadcastMessage("6");
     }
 
     @Override
