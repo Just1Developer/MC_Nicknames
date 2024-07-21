@@ -1,4 +1,8 @@
 name: Nicknames
+description: Nicknames plugin
 version: '1.0-SNAPSHOT'
+prefix: JustOneDeveloper's Nicknames
 main: net.justonedev.mc.nicknames.Nicknames
 api-version: '1.21'
+commands:
+  createnickname:
